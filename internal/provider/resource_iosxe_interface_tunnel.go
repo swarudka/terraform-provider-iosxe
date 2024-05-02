@@ -136,6 +136,13 @@ func (r *InterfaceTunnelResource) Schema(ctx context.Context, req resource.Schem
 				MarkdownDescription: helpers.NewAttributeDescription("Obtain IPv6 address from DHCP server").String,
 				Optional:            true,
 			},
+			"ip_mtu": schema.Int64Attribute{
+				MarkdownDescription: helpers.NewAttributeDescription("Set IP Maximum Transmission Unit").AddIntegerRangeDescription(68, 18000).String,
+				Optional:            true,
+				Validators: []validator.Int64{
+					int64validator.Between(68, 18000),
+				},
+			},
 			"ipv6_link_local_addresses": schema.ListNestedAttribute{
 				MarkdownDescription: helpers.NewAttributeDescription("").String,
 				Optional:            true,

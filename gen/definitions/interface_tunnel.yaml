@@ -30,7 +30,8 @@ attributes:
     example: true
     exclude_test: true
   - yang_name: ipv6/address/dhcp
-    example: true
+  - yang_name: ip/mtu
+    example: 1400
   - yang_name: ipv6/address/link-local-address
     tf_name: ipv6_link_local_addresses
     type: List

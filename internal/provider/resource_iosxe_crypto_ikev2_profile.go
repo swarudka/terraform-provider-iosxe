@@ -81,6 +81,10 @@ func (r *CryptoIKEv2ProfileResource) Schema(ctx context.Context, req resource.Sc
 					stringplanmodifier.RequiresReplace(),
 				},
 			},
+			"ivrf": schema.StringAttribute{
+				MarkdownDescription: helpers.NewAttributeDescription("I-VRF of the profile").String,
+				Optional:            true,
+			},
 			"description": schema.StringAttribute{
 				MarkdownDescription: helpers.NewAttributeDescription("Specify a description of this profile").String,
 				Optional:            true,

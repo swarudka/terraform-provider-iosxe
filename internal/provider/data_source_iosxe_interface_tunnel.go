@@ -111,6 +111,10 @@ func (d *InterfaceTunnelDataSource) Schema(ctx context.Context, req datasource.S
 				MarkdownDescription: "Obtain IPv6 address from DHCP server",
 				Computed:            true,
 			},
+			"ip_mtu": schema.Int64Attribute{
+				MarkdownDescription: "Set IP Maximum Transmission Unit",
+				Computed:            true,
+			},
 			"ipv6_link_local_addresses": schema.ListNestedAttribute{
 				MarkdownDescription: "",
 				Computed:            true,

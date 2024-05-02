@@ -67,6 +67,10 @@ func (d *CryptoIKEv2ProfileDataSource) Schema(ctx context.Context, req datasourc
 				MarkdownDescription: "",
 				Required:            true,
 			},
+			"ivrf": schema.StringAttribute{
+				MarkdownDescription: "I-VRF of the profile",
+				Computed:            true,
+			},
 			"description": schema.StringAttribute{
 				MarkdownDescription: "Specify a description of this profile",
 				Computed:            true,

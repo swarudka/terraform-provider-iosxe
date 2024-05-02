@@ -39,6 +39,7 @@ type CryptoIKEv2Profile struct {
 	Id                               types.String                                         `tfsdk:"id"`
 	DeleteMode                       types.String                                         `tfsdk:"delete_mode"`
 	Name                             types.String                                         `tfsdk:"name"`
+	Ivrf                             types.String                                         `tfsdk:"ivrf"`
 	Description                      types.String                                         `tfsdk:"description"`
 	AuthenticationRemotePreShare     types.Bool                                           `tfsdk:"authentication_remote_pre_share"`
 	AuthenticationLocalPreShare      types.Bool                                           `tfsdk:"authentication_local_pre_share"`
@@ -62,6 +63,7 @@ type CryptoIKEv2ProfileData struct {
 	Device                           types.String                                         `tfsdk:"device"`
 	Id                               types.String                                         `tfsdk:"id"`
 	Name                             types.String                                         `tfsdk:"name"`
+	Ivrf                             types.String                                         `tfsdk:"ivrf"`
 	Description                      types.String                                         `tfsdk:"description"`
 	AuthenticationRemotePreShare     types.Bool                                           `tfsdk:"authentication_remote_pre_share"`
 	AuthenticationLocalPreShare      types.Bool                                           `tfsdk:"authentication_local_pre_share"`
@@ -108,6 +110,9 @@ func (data CryptoIKEv2Profile) toBody(ctx context.Context) string {
 	body := `{"` + helpers.LastElement(data.getPath()) + `":{}}`
 	if !data.Name.IsNull() && !data.Name.IsUnknown() {
 		body, _ = sjson.Set(body, helpers.LastElement(data.getPath())+"."+"name", data.Name.ValueString())
+	}
+	if !data.Ivrf.IsNull() && !data.Ivrf.IsUnknown() {
+		body, _ = sjson.Set(body, helpers.LastElement(data.getPath())+"."+"ivrf", data.Ivrf.ValueString())
 	}
 	if !data.Description.IsNull() && !data.Description.IsUnknown() {
 		body, _ = sjson.Set(body, helpers.LastElement(data.getPath())+"."+"description", data.Description.ValueString())
@@ -192,6 +197,11 @@ func (data *CryptoIKEv2Profile) updateFromBody(ctx context.Context, res gjson.Re
 		data.Name = types.StringValue(value.String())
 	} else {
 		data.Name = types.StringNull()
+	}
+	if value := res.Get(prefix + "ivrf"); value.Exists() && !data.Ivrf.IsNull() {
+		data.Ivrf = types.StringValue(value.String())
+	} else {
+		data.Ivrf = types.StringNull()
 	}
 	if value := res.Get(prefix + "description"); value.Exists() && !data.Description.IsNull() {
 		data.Description = types.StringValue(value.String())
@@ -332,6 +342,9 @@ func (data *CryptoIKEv2ProfileData) fromBody(ctx context.Context, res gjson.Resu
 	if res.Get(helpers.LastElement(data.getPath())).IsArray() {
 		prefix += "0."
 	}
+	if value := res.Get(prefix + "ivrf"); value.Exists() {
+		data.Ivrf = types.StringValue(value.String())
+	}
 	if value := res.Get(prefix + "description"); value.Exists() {
 		data.Description = types.StringValue(value.String())
 	}
@@ -412,6 +425,9 @@ func (data *CryptoIKEv2ProfileData) fromBody(ctx context.Context, res gjson.Resu
 
 func (data *CryptoIKEv2Profile) getDeletedItems(ctx context.Context, state CryptoIKEv2Profile) []string {
 	deletedItems := make([]string, 0)
+	if !state.Ivrf.IsNull() && data.Ivrf.IsNull() {
+		deletedItems = append(deletedItems, fmt.Sprintf("%v/ivrf", state.getPath()))
+	}
 	if !state.Description.IsNull() && data.Description.IsNull() {
 		deletedItems = append(deletedItems, fmt.Sprintf("%v/description", state.getPath()))
 	}
@@ -547,6 +563,9 @@ func (data *CryptoIKEv2Profile) getEmptyLeafsDelete(ctx context.Context) []strin
 
 func (data *CryptoIKEv2Profile) getDeletePaths(ctx context.Context) []string {
 	var deletePaths []string
+	if !data.Ivrf.IsNull() {
+		deletePaths = append(deletePaths, fmt.Sprintf("%v/ivrf", data.getPath()))
+	}
 	if !data.Description.IsNull() {
 		deletePaths = append(deletePaths, fmt.Sprintf("%v/description", data.getPath()))
 	}

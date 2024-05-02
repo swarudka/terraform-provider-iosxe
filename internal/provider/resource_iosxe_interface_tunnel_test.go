@@ -38,7 +38,8 @@ func TestAccIosxeInterfaceTunnel(t *testing.T) {
 	checks = append(checks, resource.TestCheckResourceAttr("iosxe_interface_tunnel.test", "ipv6_enable", "true"))
 	checks = append(checks, resource.TestCheckResourceAttr("iosxe_interface_tunnel.test", "ipv6_mtu", "1300"))
 	checks = append(checks, resource.TestCheckResourceAttr("iosxe_interface_tunnel.test", "ipv6_nd_ra_suppress_all", "true"))
-	checks = append(checks, resource.TestCheckResourceAttr("iosxe_interface_tunnel.test", "ipv6_address_dhcp", "true"))
+	checks = append(checks, resource.TestCheckResourceAttr("iosxe_interface_tunnel.test", "ipv6_address_dhcp", ""))
+	checks = append(checks, resource.TestCheckResourceAttr("iosxe_interface_tunnel.test", "ip_mtu", "1400"))
 	checks = append(checks, resource.TestCheckResourceAttr("iosxe_interface_tunnel.test", "ipv6_link_local_addresses.0.address", "fe80::9656:d028:8652:66ba"))
 	checks = append(checks, resource.TestCheckResourceAttr("iosxe_interface_tunnel.test", "ipv6_link_local_addresses.0.link_local", "true"))
 	checks = append(checks, resource.TestCheckResourceAttr("iosxe_interface_tunnel.test", "ipv6_addresses.0.prefix", "2005:DB8::/32"))
@@ -123,7 +124,8 @@ func testAccIosxeInterfaceTunnelConfig_all() string {
 	config += `	ipv6_enable = true` + "\n"
 	config += `	ipv6_mtu = 1300` + "\n"
 	config += `	ipv6_nd_ra_suppress_all = true` + "\n"
-	config += `	ipv6_address_dhcp = true` + "\n"
+	config += `	ipv6_address_dhcp = ` + "\n"
+	config += `	ip_mtu = 1400` + "\n"
 	config += `	ipv6_link_local_addresses = [{` + "\n"
 	config += `		address = "fe80::9656:d028:8652:66ba"` + "\n"
 	config += `		link_local = true` + "\n"

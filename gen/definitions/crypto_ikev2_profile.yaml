@@ -5,6 +5,8 @@ doc_category: Crypto
 attributes:
   - yang_name: name
     example: profile1
+  - yang_name: ivrf
+    example: "I-VRF of the profile"
   - yang_name: description
     example: My description
   - yang_name: authentication/remote/pre-share

@@ -50,6 +50,7 @@ type InterfaceTunnel struct {
 	Ipv6NdRaSuppressAll          types.Bool                              `tfsdk:"ipv6_nd_ra_suppress_all"`
 	Ipv6AddressAutoconfigDefault types.Bool                              `tfsdk:"ipv6_address_autoconfig_default"`
 	Ipv6AddressDhcp              types.Bool                              `tfsdk:"ipv6_address_dhcp"`
+	IpMtu                        types.Int64                             `tfsdk:"ip_mtu"`
 	Ipv6LinkLocalAddresses       []InterfaceTunnelIpv6LinkLocalAddresses `tfsdk:"ipv6_link_local_addresses"`
 	Ipv6Addresses                []InterfaceTunnelIpv6Addresses          `tfsdk:"ipv6_addresses"`
 	TunnelSource                 types.String                            `tfsdk:"tunnel_source"`
@@ -91,6 +92,7 @@ type InterfaceTunnelData struct {
 	Ipv6NdRaSuppressAll          types.Bool                              `tfsdk:"ipv6_nd_ra_suppress_all"`
 	Ipv6AddressAutoconfigDefault types.Bool                              `tfsdk:"ipv6_address_autoconfig_default"`
 	Ipv6AddressDhcp              types.Bool                              `tfsdk:"ipv6_address_dhcp"`
+	IpMtu                        types.Int64                             `tfsdk:"ip_mtu"`
 	Ipv6LinkLocalAddresses       []InterfaceTunnelIpv6LinkLocalAddresses `tfsdk:"ipv6_link_local_addresses"`
 	Ipv6Addresses                []InterfaceTunnelIpv6Addresses          `tfsdk:"ipv6_addresses"`
 	TunnelSource                 types.String                            `tfsdk:"tunnel_source"`
@@ -196,6 +198,9 @@ func (data InterfaceTunnel) toBody(ctx context.Context) string {
 		if data.Ipv6AddressDhcp.ValueBool() {
 			body, _ = sjson.Set(body, helpers.LastElement(data.getPath())+"."+"ipv6.address.dhcp", map[string]string{})
 		}
+	}
+	if !data.IpMtu.IsNull() && !data.IpMtu.IsUnknown() {
+		body, _ = sjson.Set(body, helpers.LastElement(data.getPath())+"."+"ip.mtu", strconv.FormatInt(data.IpMtu.ValueInt64(), 10))
 	}
 	if !data.TunnelSource.IsNull() && !data.TunnelSource.IsUnknown() {
 		body, _ = sjson.Set(body, helpers.LastElement(data.getPath())+"."+"Cisco-IOS-XE-tunnel:tunnel.source", data.TunnelSource.ValueString())
@@ -401,6 +406,11 @@ func (data *InterfaceTunnel) updateFromBody(ctx context.Context, res gjson.Resul
 		}
 	} else {
 		data.Ipv6AddressDhcp = types.BoolNull()
+	}
+	if value := res.Get(prefix + "ip.mtu"); value.Exists() && !data.IpMtu.IsNull() {
+		data.IpMtu = types.Int64Value(value.Int())
+	} else {
+		data.IpMtu = types.Int64Null()
 	}
 	for i := range data.Ipv6LinkLocalAddresses {
 		keys := [...]string{"address"}
@@ -698,6 +708,9 @@ func (data *InterfaceTunnelData) fromBody(ctx context.Context, res gjson.Result)
 	} else {
 		data.Ipv6AddressDhcp = types.BoolValue(false)
 	}
+	if value := res.Get(prefix + "ip.mtu"); value.Exists() {
+		data.IpMtu = types.Int64Value(value.Int())
+	}
 	if value := res.Get(prefix + "ipv6.address.link-local-address"); value.Exists() {
 		data.Ipv6LinkLocalAddresses = make([]InterfaceTunnelIpv6LinkLocalAddresses, 0)
 		value.ForEach(func(k, v gjson.Result) bool {
@@ -858,6 +871,9 @@ func (data *InterfaceTunnel) getDeletedItems(ctx context.Context, state Interfac
 	}
 	if !state.Ipv6AddressDhcp.IsNull() && data.Ipv6AddressDhcp.IsNull() {
 		deletedItems = append(deletedItems, fmt.Sprintf("%v/ipv6/address/dhcp", state.getPath()))
+	}
+	if !state.IpMtu.IsNull() && data.IpMtu.IsNull() {
+		deletedItems = append(deletedItems, fmt.Sprintf("%v/ip/mtu", state.getPath()))
 	}
 	for i := range state.Ipv6LinkLocalAddresses {
 		stateKeyValues := [...]string{state.Ipv6LinkLocalAddresses[i].Address.ValueString()}
@@ -1096,6 +1112,9 @@ func (data *InterfaceTunnel) getDeletePaths(ctx context.Context) []string {
 	}
 	if !data.Ipv6AddressDhcp.IsNull() {
 		deletePaths = append(deletePaths, fmt.Sprintf("%v/ipv6/address/dhcp", data.getPath()))
+	}
+	if !data.IpMtu.IsNull() {
+		deletePaths = append(deletePaths, fmt.Sprintf("%v/ip/mtu", data.getPath()))
 	}
 	for i := range data.Ipv6LinkLocalAddresses {
 		keyValues := [...]string{data.Ipv6LinkLocalAddresses[i].Address.ValueString()}
