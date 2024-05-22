@@ -21,6 +21,8 @@ attributes:
       - HundredGigE
       - TwoHundredGigE
       - FourHundredGigE
+      - Vlan
+      - Port-channel
     example: GigabitEthernet
   - yang_name: name
     example: 3
